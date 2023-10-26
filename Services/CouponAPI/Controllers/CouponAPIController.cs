@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CouponAPI.Controllers
 {
+    [Route("api/coupon")]
     public class CouponAPIController : Controller
     {
         private readonly AppDbContext _context;
@@ -38,7 +39,7 @@ namespace CouponAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetWithId/{id}")]
+        [Route("GetById/{id}")]
         public ResponseDto Get(int id)
         {
             try
