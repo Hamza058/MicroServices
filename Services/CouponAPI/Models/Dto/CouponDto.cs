@@ -1,4 +1,4 @@
-﻿namespace AuthAPI.Models.Dto
+﻿namespace CouponAPI.Models.Dto
 {
     public class CouponDto
     {
