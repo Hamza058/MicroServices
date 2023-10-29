@@ -3,6 +3,7 @@ using AuthAPI.Models;
 using AuthAPI.Models.Dto;
 using AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace AuthAPI.Service
 {
@@ -19,12 +20,34 @@ namespace AuthAPI.Service
             _roleManager = roleManager;
         }
 
-        public Task<LoginRequestDto> Login(LoginRequestDto loginRequestDto)
+        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
         {
-            throw new NotImplementedException();
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName == loginRequestDto.UserName);
+            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+
+            if (user == null || isValid == false)
+            {
+                return new LoginResponseDto() { User = null, Token = "" };
+            }
+
+            UserDto userDto = new()
+            {
+                Email = user.Email,
+                Id = user.Id,
+                Name = user.Name,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            LoginResponseDto loginResponseDto = new LoginResponseDto()
+            {
+                User = userDto,
+                Token = ""
+            };
+
+            return loginResponseDto;
         }
 
-        public async Task<UserDto> Register(RegistrationRequestDto registrationRequestDto)
+        public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
         {
             ApplicationUser user = new()
             {
@@ -40,8 +63,8 @@ namespace AuthAPI.Service
                 var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
                 if (result.Succeeded)
                 {
-                    var userToReturn = _db.ApplicationUsers.First(u=>u.UserName==registrationRequestDto.Email);
-                    
+                    var userToReturn = _db.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
+
                     UserDto userDto = new()
                     {
                         Email = userToReturn.Email,
@@ -50,7 +73,11 @@ namespace AuthAPI.Service
                         PhoneNumber = userToReturn.PhoneNumber,
                     };
 
-                    return userDto;
+                    return "";
+                }
+                else
+                {
+                    return result.Errors.FirstOrDefault().Description;
                 }
             }
             catch (Exception ex)
@@ -58,7 +85,7 @@ namespace AuthAPI.Service
 
             }
 
-            return new UserDto();
+            return "Error Encountered";
         }
     }
 }
