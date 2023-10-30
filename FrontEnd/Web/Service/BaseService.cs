@@ -19,7 +19,7 @@ namespace Web.Service
         {
             try
             {
-                HttpClient client = _httpClientFactory.CreateClient("MangoAPI");
+                HttpClient client = _httpClientFactory.CreateClient("MicroAPI");
                 HttpRequestMessage message = new();
                 message.Headers.Add("Accepts", "application/json");
                 //token
