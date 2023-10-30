@@ -1,4 +1,4 @@
-﻿namespace Web.Models.Dto
+﻿namespace Web.Models
 {
     public class UserDto
     {
