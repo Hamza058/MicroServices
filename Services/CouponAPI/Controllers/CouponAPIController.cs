@@ -3,10 +3,13 @@ using CouponAPI.Data;
 using CouponAPI.Models.Dto;
 using CouponAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CouponAPI.Controllers
 {
     [Route("api/coupon")]
+    [ApiController]
+    [Authorize]
     public class CouponAPIController : Controller
     {
         private readonly AppDbContext _context;
