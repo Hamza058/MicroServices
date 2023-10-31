@@ -79,7 +79,7 @@ namespace CouponAPI.Controllers
 
         [HttpPost]
         [Route("AddCoupon")]
-        [Authorize(Roles = "ADMİN")]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto Post([FromBody] CouponDto couponDto)
         {
             try
@@ -122,7 +122,7 @@ namespace CouponAPI.Controllers
 
         [HttpDelete]
         [Route("DeleteCoupon/{id}")]
-        [Authorize(Roles = "ADMİN")]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto Delete(int id)
         {
             try

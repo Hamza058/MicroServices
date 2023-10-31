@@ -5,7 +5,7 @@
 namespace AuthAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class added_applicationUser : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
