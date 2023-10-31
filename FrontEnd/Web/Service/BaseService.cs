@@ -26,7 +26,7 @@ namespace Web.Service
                 message.Headers.Add("Accepts", "application/json");
                 //token
 
-                if (withBearer )
+                if (withBearer)
                 {
                     var token=_tokenProvider.GetToken();
                     message.Headers.Add("Authorization", $"Bearer {token}");
