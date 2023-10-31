@@ -45,7 +45,7 @@ namespace Web.Controllers
             }
             else
             {
-                ModelState.AddModelError("CustomerError", responseDto.Message);
+                TempData["error"] = responseDto.Message;
                 return View(obj);
             }
         }
