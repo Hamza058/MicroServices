@@ -6,7 +6,7 @@ namespace Web.Service.IService
     {
         Task<ResponseDto?> GetCouponAsync(string couponCode);
         Task<ResponseDto?> GetAllCouponsAsync();
-        Task<ResponseDto?> GetAllCouponByIdAsync(int id);
+        Task<ResponseDto?> GetCouponByIdAsync(int id);
         Task<ResponseDto?> CreateCouponAsync(CouponDto couponDto);
         Task<ResponseDto?> UpdateCouponAsync(CouponDto couponDto);
         Task<ResponseDto?> DeleteCouponAsync(int id);
