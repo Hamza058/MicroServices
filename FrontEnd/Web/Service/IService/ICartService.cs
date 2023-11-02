@@ -8,4 +8,5 @@ namespace Web.Service.IService
         Task<ResponseDto?> UpsertCartAsync(CartDto cartDto);
         Task<ResponseDto?> RemoveFromCartAsync(int cartDetailsId);
         Task<ResponseDto?> ApplyCouponAsync(CartDto cartDto);
+    }
 }
