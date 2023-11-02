@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ShoppingCartAPI.Data;
 using ShoppingCartAPI.Models;
 using ShoppingCartAPI.Models.Dto;
+using ShoppingCartAPI.Service.IService;
 using System.Reflection.PortableExecutable;
 
 namespace ShoppingCartAPI.Controllers
@@ -16,12 +17,14 @@ namespace ShoppingCartAPI.Controllers
         private readonly AppDbContext _db;
         private readonly ResponseDto _response;
         private IMapper _mapper;
+        private IProductService _productService;
 
-        public ShoppingCartController(AppDbContext context, IMapper mapper)
+        public ShoppingCartController(AppDbContext context, IMapper mapper, IProductService productService)
         {
             _db = context;
             _mapper = mapper;
             _response = new ResponseDto();
+            _productService = productService;
         }
 
         [HttpPost("CartUpsert")]
@@ -67,7 +70,7 @@ namespace ShoppingCartAPI.Controllers
             return _response;
         }
 
-        [HttpPost("GetCart/{userId}")]
+        [HttpGet("GetCart/{userId}")]
         public async Task<ResponseDto> GetCart(string userId)
         {
             try
@@ -78,8 +81,11 @@ namespace ShoppingCartAPI.Controllers
                 };
                 cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails.Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId));
 
+                IEnumerable<ProductDto> productDtos = await _productService.GetProducts();
+
                 foreach (var item in cart.CartDetails)
                 {
+                    item.Product = productDtos.FirstOrDefault(u => u.ProductId == item.ProductId);
                     cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
                 }
                 _response.Result = cart;
