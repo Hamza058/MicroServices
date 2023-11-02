@@ -30,9 +30,9 @@ namespace ShoppingCartAPI.Controllers
             try
             {
                 var cartHeaderFromDb = await _db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == cartDto.CartHeader.UserId);
-                if(cartHeaderFromDb == null)
+                if (cartHeaderFromDb == null)
                 {
-                    CartHeader cartHeader=_mapper.Map<CartHeader>(cartDto.CartHeader);
+                    CartHeader cartHeader = _mapper.Map<CartHeader>(cartDto.CartHeader);
                     _db.CartHeaders.Add(cartHeader);
                     await _db.SaveChangesAsync();
                     cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
@@ -64,11 +64,36 @@ namespace ShoppingCartAPI.Controllers
                 _response.Message = ex.Message.ToString();
                 _response.IsSuccess = false;
             }
-            return _response; 
+            return _response;
+        }
+
+        [HttpPost("GetCart/{userId}")]
+        public async Task<ResponseDto> GetCart(string userId)
+        {
+            try
+            {
+                CartDto cart = new()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(_db.CartHeaders.First(u => u.UserId == userId))
+                };
+                cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails.Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId));
+
+                foreach (var item in cart.CartDetails)
+                {
+                    cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
+                }
+                _response.Result = cart;
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message.ToString();
+                _response.IsSuccess = false;
+            }
+            return _response;
         }
 
         [HttpPost("RemoveCart")]
-        public async Task<ResponseDto> RemoveCart([FromBody]int cartDetailsId)
+        public async Task<ResponseDto> RemoveCart([FromBody] int cartDetailsId)
         {
             try
             {
