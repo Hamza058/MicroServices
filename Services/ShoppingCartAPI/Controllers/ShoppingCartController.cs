@@ -18,13 +18,15 @@ namespace ShoppingCartAPI.Controllers
         private readonly ResponseDto _response;
         private IMapper _mapper;
         private IProductService _productService;
+        private ICouponService _couponService;
 
-        public ShoppingCartController(AppDbContext context, IMapper mapper, IProductService productService)
+        public ShoppingCartController(AppDbContext context, IMapper mapper, IProductService productService, ICouponService couponService)
         {
             _db = context;
             _mapper = mapper;
             _response = new ResponseDto();
             _productService = productService;
+            _couponService = couponService;
         }
 
         [HttpPost("CartUpsert")]
@@ -87,6 +89,16 @@ namespace ShoppingCartAPI.Controllers
                 {
                     item.Product = productDtos.FirstOrDefault(u => u.ProductId == item.ProductId);
                     cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
+                }
+
+                if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
+                {
+                    CouponDto coupon = await _couponService.GetCoupon(cart.CartHeader.CouponCode);
+                    if (coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                    {
+                        cart.CartHeader.CartTotal -= coupon.MinAmount;
+                        cart.CartHeader.Discount = coupon.DiscountAmount;
+                    }
                 }
                 _response.Result = cart;
             }
