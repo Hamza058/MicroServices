@@ -96,7 +96,7 @@ namespace ShoppingCartAPI.Controllers
                     CouponDto coupon = await _couponService.GetCoupon(cart.CartHeader.CouponCode);
                     if (coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
                     {
-                        cart.CartHeader.CartTotal -= coupon.MinAmount;
+                        cart.CartHeader.CartTotal -= coupon.DiscountAmount;
                         cart.CartHeader.Discount = coupon.DiscountAmount;
                     }
                 }
